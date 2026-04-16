@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XSAFE Encrypt Generator Pro</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --card2:#334155;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --primary:#2563eb;
+    --primary-hover:#1d4ed8;
+    --border:#475569;
+    --radius:18px;
+    --shadow:0 12px 40px rgba(0,0,0,.35);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+    color:var(--text);
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:clamp(28px,5vw,42px);
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.header p{
+    color:var(--muted);
+    font-size:15px;
+}
+
+.card{
+    background:rgba(30,41,59,.95);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:24px;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+button{
+    border:none;
+    padding:13px 20px;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+    font-size:14px;
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:var(--primary-hover);
+    transform:translateY(-2px);
+}
+
+.btn-secondary{
+    background:var(--card2);
+    color:white;
+}
+
+.btn-secondary:hover{
+    transform:translateY(-2px);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+label{
+    font-size:14px;
+    font-weight:600;
+    color:#cbd5e1;
+}
+
+textarea{
+    width:100%;
+    min-height:320px;
+    background:#0f172a;
+    color:white;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    resize:vertical;
+    outline:none;
+    font-size:14px;
+    line-height:1.6;
+    font-family:monospace;
+}
+
+textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+.history-card{
+    margin-top:24px;
+    background:#0f172a;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+}
+
+.history-card h3{
+    margin-bottom:14px;
+    font-size:16px;
+}
+
+.history-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height:240px;
+    overflow:auto;
+}
+
+.history-item{
+    padding:12px;
+    border-radius:10px;
+    background:#1e293b;
+    cursor:pointer;
+    border:1px solid #334155;
+    transition:.2s;
+}
+
+.history-item:hover{
+    transform:translateY(-2px);
+    border-color:var(--primary);
+}
+
+.history-time{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+}
+
+.history-preview{
+    font-size:13px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.footer-note{
+    margin-top:18px;
+    color:var(--muted);
+    font-size:13px;
+    text-align:center;
+}
+
+@media(max-width:900px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    textarea{
+        min-height:220px;
+    }
+}
+
+@media(max-width:500px){
+    button{
+        width:100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>XSAFE Encrypt Generator Pro</h1>
+        <p>Encrypt • Minify • Preview • History</p>
+    </div>
+
+    <div class="card">
+
+        <div class="actions">
+            <button class="btn-primary" onclick="encryptCode()">Encrypt Code</button>
+            <button class="btn-secondary" onclick="minifyCode()">Minify</button>
+            <button class="btn-secondary" onclick="copyOutput()">Copy Result</button>
+            <button class="btn-secondary" onclick="downloadOutput()">Download</button>
+            <button class="btn-secondary" onclick="clearAll()">Clear</button>
+        </div>
+
+        <div class="grid">
+            <div class="panel">
+                <label>Original Script</label>
+                <textarea id="inputCode" placeholder="Paste HTML / JS code here..."></textarea>
+            </div>
+
+            <div class="panel">
+                <label>Encrypted Output</label>
+                <textarea id="outputCode" placeholder="Generated encrypted output..."></textarea>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <h3>Encryption History</h3>
+            <div id="historyList" class="history-list"></div>
+        </div>
+
+        <div class="footer-note">
+            Protected with automatic XSAFE signature
+        </div>
+    </div>
+</div>
+
+<script>
+let historyData = JSON.parse(localStorage.getItem("xsafeHistory")) || [];
+
+function encryptCode(){
+    let code = document.getElementById("inputCode").value;
+
+    if(!code.trim()){
+        alert("Please enter code first");
+        return;
+    }
+
+    let encoded = btoa(unescape(encodeURIComponent(code)));
+
+    let wrapped = `<!-- XSAFE | ENCRYPTED SCRIPT -->
+<script>
+/*
+══════════════════════════════
+XSAFE ENCRYPT GENERATOR PRO
+Protected by XSAFE
+Do Not Modify
+══════════════════════════════
+*/
+(function(){
+const encrypted="${encoded}";
+const decoded=decodeURIComponent(escape(atob(encrypted)));
+document.write(decoded);
+})();
+<\/script>
+<!-- GENERATED BY XSAFE -->`;
+
+    document.getElementById("outputCode").value = wrapped;
+
+    saveHistory(code, wrapped);
+}
+
+function minifyCode(){
+    let code = document.getElementById("inputCode").value;
+
+    let minified = code
+        .replace(/\n/g,' ')
+        .replace(/\s+/g,' ')
+        .replace(/>\s+</g,'><')
+        .trim();
+
+    document.getElementById("outputCode").value = minified;
+}
+
+function copyOutput(){
+    let output = document.getElementById("outputCode");
+
+    if(!output.value.trim()){
+        alert("No output to copy");
+        return;
+    }
+
+    output.select();
+    document.execCommand("copy");
+    alert("Copied successfully");
+}
+
+function downloadOutput(){
+    let data = document.getElementById("outputCode").value;
+
+    if(!data.trim()){
+        alert("No output to download");
+        return;
+    }
+
+    let blob = new Blob([data], {type:"text/html"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "xsafe-encrypted-output.html";
+    a.click();
+}
+
+function clearAll(){
+    document.getElementById("inputCode").value = "";
+    document.getElementById("outputCode").value = "";
+}
+
+function saveHistory(original, encrypted){
+    const item = {
+        time: new Date().toLocaleString(),
+        original,
+        encrypted
+    };
+
+    historyData.unshift(item);
+
+    if(historyData.length > 10){
+        historyData.pop();
+    }
+
+    localStorage.setItem("xsafeHistory", JSON.stringify(historyData));
+    renderHistory();
+}
+
+function renderHistory(){
+    const list = document.getElementById("historyList");
+    list.innerHTML = "";
+
+    historyData.forEach((item,index)=>{
+        list.innerHTML += `
+            <div class="history-item" onclick="loadHistory(${index})">
+                <div class="history-time">${item.time}</div>
+                <div class="history-preview">${escapeHtml(item.original.slice(0,120))}</div>
+            </div>
+        `;
+    });
+}
+
+function loadHistory(index){
+    document.getElementById("inputCode").value = historyData[index].original;
+    document.getElementById("outputCode").value = historyData[index].encrypted;
+}
+
+function escapeHtml(str){
+    return str.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>
